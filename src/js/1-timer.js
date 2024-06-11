@@ -24,6 +24,7 @@ startButton.style.cursor = 'default';
 startButton.style.color = '989898';
 startButton.style.width = '75px';
 startButton.style.height = '40px';
+startButton.disabled = true;
 
 startButton.addEventListener('mouseover', () => {
     startButton.style.backgroundColor = "#4E75FF";
@@ -105,7 +106,20 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-        targetDate = selectedDates[0].getTime();
+      targetDate = selectedDates[0].getTime();
+      if (targetDate && targetDate.getTime() > Date.now()) {
+        startButton.disabled = false;
+        startButton.style.backgroundColor = '#4E75FF';
+        startButton.style.cursor = 'pointer';
+      } else {
+        startButton.disabled = true;
+        startButton.style.backgroundColor = '#CFCFCF';
+        startButton.style.cursor = 'default';
+        iziToast.error({
+          title: 'Invalid Date',
+          message: 'Please select a future date and time.',
+        });
+      }
     },
 };
 
