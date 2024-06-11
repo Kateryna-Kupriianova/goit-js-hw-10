@@ -27,6 +27,7 @@ startButton.style.height = '40px';
 startButton.disabled = true;
 
 startButton.addEventListener('mouseover', () => {
+  if (!startButton.disabled)
     startButton.style.backgroundColor = "#4E75FF";
 });
 startButton.addEventListener('mouseout', () => {
@@ -43,7 +44,12 @@ startButton.addEventListener('click', () => {
             message: 'Please select a date and time before starting the countdown',
         });
         return;
-    }
+  }
+  
+    startButton.disabled = true;
+    startButton.style.backgroundColor = '#CFCFCF';
+    startButton.style.cursor = 'default';
+    dateTimePicker.disabled = true;
 
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -60,15 +66,13 @@ startButton.addEventListener('click', () => {
                 title: 'Countdown finished',
                 message: 'The event has started!',
             });
+            dateTimePicker.disabled = false;
+            startButton.disabled = true;
+            startButton.style.backgroundColor = '#CFCFCF';
+            startButton.style.cursor = 'default';
             return;
       }
         const { days, hours, minutes, seconds } = convertMs(distance);
-
-        // const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        // const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        // const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        // const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
         document.querySelector('span[data-days]').innerText = String(days).padStart(2, '0');
         document.querySelector('span[data-hours]').innerText = String(hours).padStart(2, '0');
         document.querySelector('span[data-minutes]').innerText = String(minutes).padStart(2, '0');
@@ -107,7 +111,7 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-      targetDate = selectedDates[0].getTime();
+      targetDate = selectedDates[0];
       if (targetDate && targetDate.getTime() > Date.now()) {
         startButton.disabled = false;
         startButton.style.backgroundColor = '#4E75FF';
